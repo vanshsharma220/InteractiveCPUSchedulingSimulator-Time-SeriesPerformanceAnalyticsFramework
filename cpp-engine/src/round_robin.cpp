@@ -9,7 +9,6 @@ int main() {
         std::cerr << "Invalid input\n";
         return 1;
     }
-
     int q;
 
     std::cout << "Time quantum: ";

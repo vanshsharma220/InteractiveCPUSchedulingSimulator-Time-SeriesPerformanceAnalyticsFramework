@@ -8,8 +8,7 @@ int main() {
         std::cerr << "Invalid input\n";
         return 1;
     }
-
-    // Sort processes by arrival time.
+    // Sorting processes by arrival time.
     std::stable_sort(
         p.begin(),
         p.end(),
@@ -17,14 +16,13 @@ int main() {
             return a.at < b.at;
         }
     );
-
     std::vector<Segment> t;
 
     int time = 0;
 
     for (auto& x : p) {
 
-        // If the process arrives later, CPU remains idle.
+        // If the process arrives later into cpu, CPU remains idle.
         if (time < x.at) {
             addSegment(t, "IDLE", time, x.at);
             time = x.at;

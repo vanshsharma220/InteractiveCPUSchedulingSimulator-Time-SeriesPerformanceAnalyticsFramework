@@ -8,7 +8,6 @@ int main() {
         std::cerr << "Invalid input\n";
         return 1;
     }
-
     std::vector<Segment> t;
 
     int time = 0;
