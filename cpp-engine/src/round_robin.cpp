@@ -11,6 +11,7 @@ int main() {
     }
     int q;
 
+    
     std::cout << "Time quantum: ";
 
     if (!(std::cin >> q) || q < 1) {

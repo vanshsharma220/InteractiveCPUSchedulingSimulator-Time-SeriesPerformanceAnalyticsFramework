@@ -4,6 +4,7 @@
 int main() {
     std::vector<Process> p;
 
+    
     if (!readInput(p)) {
         std::cerr << "Invalid input\n";
         return 1;

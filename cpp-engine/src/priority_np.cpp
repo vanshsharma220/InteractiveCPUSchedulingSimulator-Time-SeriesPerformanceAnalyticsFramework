@@ -26,7 +26,6 @@ int main() {
                 k = i;
             }
         }
-
         // If no process is available, move time to the next arrival.
         if (k < 0) {
             int next = 1e9;
@@ -37,6 +36,7 @@ int main() {
                 }
             }
 
+            
             addSegment(t, "IDLE", time, next);
             time = next;
 

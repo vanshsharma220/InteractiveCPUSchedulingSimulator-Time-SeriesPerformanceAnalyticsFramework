@@ -10,6 +10,7 @@ int main() {
     }
     std::vector<Segment> t;
 
+    
     int time = 0;
     int done = 0;
 

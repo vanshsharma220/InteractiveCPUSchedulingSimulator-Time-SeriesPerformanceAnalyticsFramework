@@ -8,7 +8,7 @@ int main() {
         std::cerr << "Invalid input\n";
         return 1;
     }
-    // Sorting processes by arrival time.
+    // Sorting processes by arrival time .
     std::stable_sort(
         p.begin(),
         p.end(),
