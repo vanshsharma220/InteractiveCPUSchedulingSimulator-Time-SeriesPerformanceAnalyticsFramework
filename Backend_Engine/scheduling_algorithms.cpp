@@ -333,12 +333,11 @@ SimulationResult calculateRoundRobin(vector<Process> processes,int quantum){
         process.rt -= executionTime;
 
         GanttEntry gantt;
-
         gantt.pid = process.pid;
         gantt.startTime = startTime;
         gantt.endTime = currentTime;
         result.gantt.push_back(gantt);
-
+        
         while (nextProcess < n && processes[nextProcess].at <= currentTime)
         {
             readyQueue.push(nextProcess);
