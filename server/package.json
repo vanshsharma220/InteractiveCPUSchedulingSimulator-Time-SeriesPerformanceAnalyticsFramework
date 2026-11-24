@@ -1,0 +1,8 @@
+{
+  "name":"algovis-db",
+  "version":"2.0.0",
+  "private":true,
+  "type":"module",
+  "scripts":{"start":"node src/index.js","dev":"node --watch src/index.js"},
+  "dependencies":{"dotenv":"^16.4.7","express":"^4.21.2","mysql2":"^3.12.0","mongodb":"^6.12.0"}
+}

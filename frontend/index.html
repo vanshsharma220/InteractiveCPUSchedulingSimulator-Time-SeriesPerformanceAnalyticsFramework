@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AlgoVis-DB | OS + DBMS Lab</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-icon">A</span>
+
+            <div>
+                <b>AlgoVis-DB</b>
+                <small>OPERATING SYSTEMS × DATABASE SYSTEMS</small>
+            </div>
+        </div>
+
+        <div class="status">
+            <span id="apiDot" class="dot"></span>
+            <span id="apiStatus">Checking API…</span>
+        </div>
+    </header>
+
+    <main class="shell">
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div>
+                <p class="eyebrow">INTERACTIVE LEARNING STUDIO</p>
+
+                <h1>
+                    See algorithms.<br>
+                    <span>Measure performance.</span>
+                </h1>
+
+                <p class="hero-copy">
+                    Animate CPU scheduling, inspect execution metrics,
+                    and benchmark relational vs document databases
+                    using repeatable workloads.
+                </p>
+            </div>
+
+            <div class="hero-art">
+                <div class="chip">CPU</div>
+                <div class="orbit o1"></div>
+                <div class="orbit o2"></div>
+                <div class="node n1">FCFS</div>
+                <div class="node n2">SQL</div>
+                <div class="node n3">RR</div>
+                <div class="node n4">NoSQL</div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab active" data-tab="os">
+                ◫ OS Scheduling Lab
+            </button>
+
+            <button class="tab" data-tab="dbms">
+                ▦ DBMS Benchmark Lab
+            </button>
+
+            <button class="tab" data-tab="history">
+                ◷ History & SQL
+            </button>
+        </nav>
+
+        <!-- Operating Systems Section -->
+        <section id="os" class="panel active">
+
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">CPU SCHEDULING</p>
+                    <h2>Build a process workload</h2>
+                    <p>
+                        Choose an algorithm, then step through its execution.
+                    </p>
+                </div>
+
+                <button id="loadSample" class="btn secondary">
+                    Load sample
+                </button>
+            </div>
+
+            <div class="work-grid">
+
+                <!-- Process Input -->
+                <div class="card input-card">
+
+                    <div class="card-title">
+                        <h3>Process input</h3>
+                        <span class="pill">MAX 100</span>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Process</th>
+                                    <th>Arrival</th>
+                                    <th>Burst</th>
+                                    <th>Priority</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="processRows"></tbody>
+                        </table>
+                    </div>
+
+                    <button id="addProcess" class="btn secondary small">
+                        ＋ Add process
+                    </button>
+
+                    <div class="controls-grid">
+
+                        <label>
+                            Scheduling algorithm
+                            <select id="algorithm">
+                                <option value="FCFS">FCFS</option>
+                                <option value="SJF">SJF (non-preemptive)</option>
+                                <option value="RR">Round Robin</option>
+                                <option value="PRIORITY_NP">
+                                    Priority (non-preemptive)
+                                </option>
+                                <option value="SRTF">SRTF (preemptive)</option>
+                                <option value="PRIORITY_P">
+                                    Priority (preemptive)
+                                </option>
+                            </select>
+                        </label>
+
+                        <label>
+                            Time quantum (RR)
+                            <input
+                                id="quantum"
+                                type="number"
+                                min="1"
+                                value="2"
+                            >
+                        </label>
+
+                        <label class="wide">
+                            Simulation label
+                            <input
+                                id="label"
+                                value="My scheduling experiment"
+                                maxlength="120"
+                            >
+                        </label>
+
+                    </div>
+
+                    <button id="runSimulation" class="btn primary full">
+                        ▶ Run simulation
+                    </button>
+
+                    <p id="simMessage" class="message"></p>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="card metrics-card">
+
+                    <div class="card-title">
+                        <h3>Performance overview</h3>
+                        <span class="pill">LIVE RESULT</span>
+                    </div>
+
+                    <div class="metric-grid">
+
+                        <div class="metric">
+                            <span>Avg waiting</span>
+                            <b id="avgWT">—</b>
+                            <small>time units</small>
+                        </div>
+
+                        <div class="metric">
+                            <span>Avg turnaround</span>
+                            <b id="avgTAT">—</b>
+                            <small>time units</small>
+                        </div>
+
+                        <div class="metric">
+                            <span>Avg response</span>
+                            <b id="avgRT">—</b>
+                            <small>time units</small>
+                        </div>
+
+                        <div class="metric">
+                            <span>CPU utilization</span>
+                            <b id="cpuUtil">—</b>
+                            <small>busy / elapsed</small>
+                        </div>
+
+                    </div>
+
+                    <div class="chart-wrap">
+                        <canvas id="metricsChart" height="170"></canvas>
+                    </div>
+
+                    <p class="muted small-text">
+                        Metrics update from the selected schedule.
+                        Historical saves require MySQL.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Execution Timeline -->
+            <div class="card timeline-card">
+
+                <div class="section-head compact">
+                    <div>
+                        <h3>Execution timeline</h3>
+                        <p>Each block represents a CPU execution interval.</p>
+                    </div>
+
+                    <div class="play-controls">
+                        <button id="play" class="btn secondary">
+                            ▶ Play
+                        </button>
+
+                        <button id="step" class="btn secondary">
+                            Step →
+                        </button>
+
+                        <button id="reset" class="btn secondary">
+                            ↺ Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div id="timeline" class="timeline">
+                    <div class="empty-state">
+                        Run a simulation to generate the Gantt chart.
+                    </div>
+                </div>
+
+                <div class="scrub">
+                    <label for="speed">Animation speed</label>
+
+                    <input
+                        id="speed"
+                        type="range"
+                        min="1"
+                        max="5"
+                        value="3"
+                    >
+
+                    <span id="speedLabel">3×</span>
+                    <span id="timeLabel" class="time-label">Time: —</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Process</th>
+                                <th>AT</th>
+                                <th>BT</th>
+                                <th>CT</th>
+                                <th>TAT</th>
+                                <th>WT</th>
+                                <th>RT</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="resultsRows">
+                            <tr>
+                                <td colspan="7" class="muted">
+                                    No results yet.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Algorithm Comparison -->
+            <div class="card compare-card">
+
+                <div class="section-head compact">
+                    <div>
+                        <h3>Compare algorithms</h3>
+                        <p>
+                            Run all algorithms on the same process set.
+                        </p>
+                    </div>
+
+                    <button id="compare" class="btn primary">
+                        Compare all
+                    </button>
+                </div>
+
+                <div id="comparison" class="comparison">
+                    <div class="empty-state">
+                        Comparison results will appear here.
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- DBMS Benchmark Section -->
+        <section id="dbms" class="panel">
+
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">DATABASE PERFORMANCE LAB</p>
+                    <h2>Relational vs document database</h2>
+                    <p>
+                        Run a small indexed-read benchmark against connected
+                        databases.
+                    </p>
+                </div>
+
+                <span class="pill">MEASURE, DON'T ASSUME</span>
+            </div>
+
+            <div class="dbms-grid">
+
+                <!-- Benchmark Configuration -->
+                <div class="card">
+
+                    <div class="card-title">
+                        <h3>Benchmark configuration</h3>
+                        <span class="pill">READ WORKLOAD</span>
+                    </div>
+
+                    <label>
+                        Target record count
+                        <input
+                            id="benchCount"
+                            type="number"
+                            min="100"
+                            max="20000"
+                            value="1000"
+                        >
+                    </label>
+
+                    <label>
+                        Repeated trials
+                        <select id="benchRepeats">
+                            <option value="1">1 trial</option>
+                            <option value="3" selected>3 trials</option>
+                            <option value="5">5 trials</option>
+                        </select>
+                    </label>
+
+                    <button id="runBenchmark" class="btn primary full">
+                        ⚡ Run DBMS benchmark
+                    </button>
+
+                    <p id="benchMessage" class="message"></p>
+
+                    <div class="notice">
+                        <b>Fairness note</b>
+                        <p>
+                            This sample measures indexed reads only.
+                            Results depend on indexes, data model, caching,
+                            network and hardware. It does not prove one
+                            database is universally faster.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Benchmark Results -->
+                <div class="card">
+
+                    <div class="card-title">
+                        <h3>Measured latency</h3>
+                        <span class="pill">MILLISECONDS</span>
+                    </div>
+
+                    <div id="benchmarkResults" class="benchmark-results">
+                        <div class="empty-state">
+                            Run a benchmark to view results.
+                        </div>
+                    </div>
+
+                    <canvas id="benchChart" height="180"></canvas>
+                </div>
+
+            </div>
+
+            <!-- DBMS Concepts -->
+            <div class="card">
+
+                <h3>DBMS concepts to explore</h3>
+
+                <div class="concept-grid">
+
+                    <article>
+                        <span>01</span>
+                        <h4>Indexes & EXPLAIN</h4>
+                        <p>
+                            Compare lookup performance and inspect whether
+                            the database uses an index.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>02</span>
+                        <h4>ACID & rollback</h4>
+                        <p>
+                            Study atomicity, consistency, isolation,
+                            durability, COMMIT and ROLLBACK.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>03</span>
+                        <h4>Relational queries</h4>
+                        <p>
+                            Practice JOIN, GROUP BY, HAVING, aggregate
+                            functions and views.
+                        </p>
+                    </article>
+
+                    <article>
+                        <span>04</span>
+                        <h4>Data modeling</h4>
+                        <p>
+                            Compare normalized relational tables with
+                            flexible document records.
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- History and SQL Section -->
+        <section id="history" class="panel">
+
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">PERSISTENCE & ANALYTICS</p>
+                    <h2>Simulation history</h2>
+                    <p>
+                        Stored runs can be retrieved from MySQL when
+                        configured.
+                    </p>
+                </div>
+
+                <button id="refreshHistory" class="btn secondary">
+                    ↻ Refresh
+                </button>
+            </div>
+
+            <div class="card">
+                <div id="historyList" class="history-list">
+                    <div class="empty-state">
+                        Load saved simulations from the API.
+                    </div>
+                </div>
+            </div>
+
+            <!-- SQL Query Runner -->
+            <div class="card">
+
+                <div class="card-title">
+                    <h3>Run real SQL queries</h3>
+                    <span class="pill">MYSQL · READ ONLY</span>
+                </div>
+
+                <p>
+                    Try SELECT, JOIN, GROUP BY, HAVING, SHOW, DESCRIBE
+                    or EXPLAIN. Queries run on your configured MySQL database.
+                </p>
+
+                <textarea
+                    id="sqlInput"
+                    rows="4"
+                    style="width:100%;margin:12px 0;padding:14px;background:#0b1525;color:#e8eef9;border:1px solid #2a3b54;border-radius:10px;font-family:monospace"
+                    spellcheck="false"
+                >SELECT department, COUNT(*) AS students, AVG(score) AS avg_score FROM lab_students GROUP BY department HAVING COUNT(*) > 0;</textarea>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button id="runSql" class="btn primary">
+                        ▶ Run SQL
+                    </button>
+
+                    <button id="rollbackDemo" class="btn secondary">
+                        Show transaction + ROLLBACK
+                    </button>
+                </div>
+
+                <p id="sqlMessage" class="message"></p>
+
+                <div id="sqlResult" style="overflow:auto"></div>
+
+                <div
+                    id="transactionResult"
+                    class="notice"
+                    style="display:none;margin-top:12px"
+                ></div>
+
+            </div>
+
+            <!-- Duplicate SQL Card Preserved From Original -->
+            <div class="card">
+
+                <div class="card-title">
+                    <h3>Run real NO  SQL queries (UNDERPROGRESS)</h3>
+                    <span class="pill">MYSQL · READ ONLY</span>
+                </div>
+
+                <p>
+                    run no sql queries
+                </p>
+
+                <textarea
+                    id="sqlInput"
+                    rows="4"
+                    style="width:100%;margin:12px 0;padding:14px;background:#0b1525;color:#e8eef9;border:1px solid #2a3b54;border-radius:10px;font-family:monospace"
+                    spellcheck="false"
+                >----mongo commands---</textarea>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button id="runSql" class="btn primary">
+                        ▶ Run no SQL
+                    </button>
+
+                    <button id="rollbackDemo" class="btn secondary">
+                        Show no sql data
+                    </button>
+                </div>
+
+                <p id="sqlMessage" class="message"></p>
+
+                <div id="sqlResult" style="overflow:auto"></div>
+
+                <div
+                    id="transactionResult"
+                    class="notice"
+                    style="display:none;margin-top:12px"
+                ></div>
+
+            </div>
+
+            <!-- SQL Examples -->
+            <div class="card">
+
+                <div class="card-title">
+                    <h3>SQL learning snippets</h3>
+                    <span class="pill">MYSQL</span>
+                </div>
+
+                <div id="sqlExamples" class="sql-examples">
+                    <div class="empty-state">
+                        Loading SQL examples…
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <span>AlgoVis-DB · Educational prototype</span>
+            <span>OS scheduling + database systems</span>
+        </footer>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
